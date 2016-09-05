@@ -20,30 +20,34 @@ var conversion = {
 }
 
 var flightData = {
-	findDepartures: function (data) {
-			for (var i = 0; i < data.legs.length; i++) {
+	findDepartures: function (d) {
+
+			for (var i = 0; i < d.legs.length; i++) {
 				flights.push({
-					"flightNumber": data.legs[i].segments[0].flightNumber,
-					// "departure": data.legs[i].segments[0].departureTime,
-					// "arrival": data.legs[i].segments[0].arrivalTime,
-					// "airline": data.legs[i].segments[0].airlineName,
-					// "stops": data.legs[i].segments[0].stops,
-					"timeEpochSec": data.legs[i].segments[0].departureTimeEpochSeconds
-				});
+					"flightNumber": d.legs[i].segments[0].flightNumber,
+					"departure": d.legs[i].segments[0].departureTime,
+					"arrival": d.legs[i].segments[0].arrivalTime,
+					"airline": d.legs[i].segments[0].airlineName,
+					// "stops": d.legs[i].segments[0].stops,
+					"timeEpochSec": d.legs[i].segments[0].departureTimeEpochSeconds
+				}); 
 
 			};
+
 			return flights;
+
 		},
 	sortFlights: function(a,b) {
 		return a.timeEpochSec - b.timeEpochSec;
 	},
-	removeDuplicates: function(a) {
-		console.log(a[0].flightNumber);
-    var seen = {};
+	removeDuplicates: function(k,a) {
+    return a.filter(function(x) {
+    	var mySet = new Set();
 
-    return a.filter(function(item.flightNumber) {
-    	  console.log("this is seen : ", seen);
-        return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+    	var key   = k(x); 
+    	var isNew = !mySet.has(key);
+
+    	if (isNew) { return mySet.add(key) };
     });
 
 	},
@@ -82,9 +86,9 @@ request.onload = function() {
 	// console.log(d);
 	var s = flights.sort(flightData.sortFlights);
 	// console.log(s);
-	var p = flightData.removeDuplicates(s);
-	console.log(p);
-	// flightData.printF(p);
+	var p = flightData.removeDuplicates(x => x.flightNumber, s);
+	// console.log("THIS IS P:", p);
+	console.log(flightData.printF(p));
 
 };
 
